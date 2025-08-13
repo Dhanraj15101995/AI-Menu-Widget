@@ -14,13 +14,12 @@ export default function App() {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8000/generate-item-details', {
+      const res = await fetch('http://localhost:4000/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          item_name: itemName, 
-          simulate,
-          gpt_model: gptModel // Bonus: Send selected model to backend
+          itemName: itemName, 
+          simulate
         })
       })
       
@@ -31,9 +30,9 @@ export default function App() {
       
       const data = await res.json()
       setDescription(data.description || '')
-      setUpsellSuggestion(data.upsell_suggestion || '')
-      setGeneratedAt(data.generated_at || '')
-      setModelUsed(data.model_used || '')
+      setUpsellSuggestion(data.combos?.[0] || '')
+      setGeneratedAt(new Date().toISOString())
+      setModelUsed(simulate ? 'simulate' : 'gpt-3.5-turbo')
     } catch (err) {
       setError(err.message)
       setDescription('')
